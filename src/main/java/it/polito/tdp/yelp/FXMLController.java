@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.yelp.model.Model;
+import it.polito.tdp.yelp.model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -38,13 +39,13 @@ public class FXMLController {
     private TextField txtX2; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbAnno"
-    private ComboBox<?> cmbAnno; // Value injected by FXMLLoader
+    private ComboBox<Integer> cmbAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtN"
     private TextField txtN; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbUtente"
-    private ComboBox<?> cmbUtente; // Value injected by FXMLLoader
+    private ComboBox<User> cmbUtente; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtX1"
     private TextField txtX1; // Value injected by FXMLLoader
@@ -54,12 +55,36 @@ public class FXMLController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
+    	try {
+    	int anno = this.cmbAnno.getValue();
+    	String k = this.txtN.getText();
+    	int n = Integer.parseInt(k);
+    	if(n>0) {
+    		model.creaGrafo(n, anno);
+    		this.txtResult.appendText("Creato grafo con "+model.getGrafo().vertexSet().size()+" e "+model.getGrafo().edgeSet().size()+" archi.\n");
+    		this.SetCombo1();
+    	}else {
+    		this.txtResult.setText("il numero dev'essere maggiore di 0.\n");
+    	}
+    	}catch(NumberFormatException e) {
+    		this.txtResult.setText("dati inseriti nel formato sbagliato.\n");
+    	}
 
     }
 
     @FXML
     void doUtenteSimile(ActionEvent event) {
-
+    	User u = this.cmbUtente.getValue();
+    	if(u!=null) {
+    		if(model.getSimile(u).size()>0) {
+    		for (User u1 : model.getSimile(u)) {
+    			this.txtResult.appendText(u1.getUserId()+"\n");
+    		}}else {
+    			this.txtResult.appendText("nessuno");
+    		}
+    	}else {
+    		this.txtResult.appendText("Selezionare un utente.\n");
+    	}
     }
     
     @FXML
@@ -84,5 +109,15 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    }
+    
+    public void setCombo() {
+    	for(int anno = 2005; anno<=2013; anno++) {
+    		this.cmbAnno.getItems().add(anno);
+    	}
+    }
+    
+    public void SetCombo1() {
+    	this.cmbUtente.getItems().addAll(model.setCombo());
     }
 }

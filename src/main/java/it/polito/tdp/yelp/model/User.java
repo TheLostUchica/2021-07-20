@@ -20,6 +20,11 @@ public class User {
 		this.averageStars = averageStars;
 		this.reviewCount = reviewCount;
 	}
+	
+	public User(String UserId, int c) {
+		this.userId = UserId;
+		this.reviewCount = c;
+	}
 
 	public String getUserId() {
 		return userId;
@@ -104,7 +109,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return String.format("%s (%s)",  name, userId);
+		return this.userId;
 	}
 	
 }
